@@ -1,60 +1,120 @@
 (function ( $ ) {
- 
-    $.fn.myPlagin = function( options ) {
 
-		var settings = $.extend({
-			h: "Обратная связь",
-            p1: "Ваше имя",
-            p2: "Телефон",
-            p3: "Email",
-            p4: "Сообщение"
-        }, options );
+	var methods={
+        $form: null,
+        $butt:null,
 
-		$("form").append("<h3>"+settings.h.toUpperCase()+"</h3>");
+		init: function( options ){
 
-        for(var i=0;i<4;i++){
-            $("form").append("<p></p>");
-        }
+			var settings = $.extend({},$.fn.myPlugin.defaults, options);
+            $("#modal_form").append("<span id='modal_close'>X</span>");       
 
-        $("p:eq(0)").text(settings.p1);
-        $("p:eq(1)").text(settings.p2);
-        $("p:eq(2)").text(settings.p3);
-        $("p:eq(3)").text(settings.p4);
+            $form = $(this);
+            $butt = $form.find( ".button" );
 
-        $("p").each(function(){
-            var p=$( this );
-            var text=p.text();
-            p.append("</br><input class=\"input\" type=\"text\" name=\"your-name\" value=\"\" size=\"33\" />");
-            var el=p.children('input');
-            el.attr("placeholder", text);
-        });
+			$("h3").text(settings.h.toUpperCase());
+			$("p:eq(0)").text( settings.p1 );
+        	$("p:eq(1)").text( settings.p2 );
+        	$("p:eq(2)").text( settings.p3 );
+        	$("p:eq(3)").text( settings.p4 );
+        	$butt.val( settings.b.toUpperCase() );          
 
+            $form.find( ".ness_chek" ).addClass( "empty" );
 
-        $("form").append("<input class=\"buttom\" type=\"submit\" value=\"ОТПРАВИТЬ\" />");
-        return this;
-    };
+            $butt.click( methods.clickButton );
+            $('#modal_close, #overlay').click(methods.closeForm);
+            $( "a" ).click(methods.showForm);
+            
+            return this;
+		},
 
-    $("form").append("<span id=\"modal_close\">X</span>");
-
-    $( "a" ).click(function( event ) {
-        $('#overlay').fadeIn(200);//показать подложку
-        $('#modal_form')
+        showForm: function(event){
+            $('#overlay').fadeIn(200);//показать подложку
+            $('#modal_form')
             .css('display', 'block')
             .animate({opacity: 1, top: '50%'}, 200);
-    }); 
+        },
 
-    $('#modal_close, #overlay').click( function(){ //закрытие
-        $('#modal_form').css('display', 'none'); //display: none;
-        $('#overlay').fadeOut(400); // скрываем подложку
-    });
-    
- 
+        closeForm: function(){
+            $('#modal_form').css('display', 'none'); //display: none;
+            $('#overlay').fadeOut(400); // скрываем подложку
+        },
+
+        logic: function(){ //логика проверки
+            methods.chekInput(); 
+            var count =$form.find( ".empty" ).length; //подсчет пустых
+
+            if(count > 0){
+                if($butt.hasClass('disabled')){
+                    return false
+                } else {
+                    $butt.addClass('disabled')
+                }
+            } else {
+                $butt.removeClass('disabled')
+            }
+        },
+
+        chekInput: function(){ //проверка полей
+            $form.find( ".ness_chek" ).each(function(){
+                if($(this).val() != ''){
+                    //поле не пустое 
+                    $(this).removeClass( "empty" );
+                } else {
+                    //поле пустое 
+                    $(this).addClass( "empty" );                }
+            });
+        },
+
+        attention: function(){
+            $form.find(".empty").css('border-color','red');
+            setTimeout(function(){
+                $form.find('.empty').removeAttr('style');
+            },500);
+        },
+
+		clickButton: function(){
+			methods.logic();
+            if($(this).hasClass('disabled')){
+                methods.attention();
+                return false
+            } else {
+            //отправка
+            $form.submit();
+            }
+		}
+	};
+
+	$.fn.myPlugin = function ( options ) {
+		if ( methods[options] ) {
+      		return methods[ options ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+    	} else if ( typeof options === 'object' || ! options ) {
+      		return methods.init.apply( this, arguments );
+   		} else {
+      		$.error( 'Метод ' +  options + ' в jQuery.tooltip не существует' );
+    	} 
+
+
+	};
+
+	$.fn.myPlugin.defaults = {
+		h: "Обратная связь",
+        p1: "Ваше имя",
+        p2: "Телефон",
+        p3: "Email",
+        p4: "Сообщение",
+        b: "отправить"
+	}
+
 }( jQuery ));
 
 
 
 
 
-$( "#modal_form" ).myPlagin({
-	p1:"мое название"
-}).css('background','white');
+
+
+
+
+
+
