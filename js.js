@@ -13,10 +13,10 @@
             $butt = $form.find( ".button" );
 
 			$("h3").text(settings.h.toUpperCase());
-			$("p:eq(0)").text( settings.p1 );
-        	$("p:eq(1)").text( settings.p2 );
-        	$("p:eq(2)").text( settings.p3 );
-        	$("p:eq(3)").text( settings.p4 );
+			$("lable:eq(0)").text( settings.p1 );
+        	$("lable:eq(1)").text( settings.p2 );
+        	$("lable:eq(2)").text( settings.p3 );
+        	$("lable:eq(3)").text( settings.p4 );
         	$butt.val( settings.b.toUpperCase() );          
 
             $form.find( ".ness_chek" ).addClass( "empty" );
@@ -24,7 +24,7 @@
             $butt.click( methods.clickButton );
             $('#modal_close, #overlay').click(methods.closeForm);
             $( "a" ).click(methods.showForm);
-            
+
             return this;
 		},
 
@@ -67,7 +67,7 @@
         },
 
         attention: function(){
-            $form.find(".empty").css('border-color','red');
+            $form.find(".empty").css('border-color','grey');
             setTimeout(function(){
                 $form.find('.empty').removeAttr('style');
             },500);
