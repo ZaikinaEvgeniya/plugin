@@ -141,6 +141,7 @@ var methods = {
     p1_check: true,
     p2_check: false,
     p3_check: false,
-    p4_check: false}
+    p4_check: false
+  }
 
 }( jQuery ));
