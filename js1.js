@@ -2,15 +2,31 @@
 
 	var methods={
         $form: null,
-        $butt:null,
+        $butt: null,
+        $this: null,
 
 		init: function( options ){
 
-			var settings = $.extend({},$.fn.myPlugin.defaults, options);
-            $("#modal_form").append("<span id='modal_close'>X</span>");       
+            $this = $(this);
 
-            $form = $(this);
-            $butt = $form.find( ".button" );
+            methods.createForm();
+
+			var settings = $.extend({},$.fn.myPlugin.defaults, options);
+            $form = $("#modal_form");
+            $butt = $form.find( ".button" ); 
+
+            if(settings.p1_check==true){
+                $("input:eq(0)").addClass( "ness_chek" );
+            };
+            if(settings.p2_check==true){
+                $("input:eq(1)").addClass( "ness_chek" );
+            };
+            if(settings.p3_check==true){
+                $("input:eq(2)").addClass( "ness_chek" );
+            };
+            if(settings.p4_check==true){
+                $("input:eq(3)").addClass( "ness_chek" );
+            };     
 
 			$("h3").text(settings.h.toUpperCase());
 			$("lable:eq(0)").text( settings.p1 );
@@ -23,20 +39,37 @@
 
             $butt.click( methods.clickButton );
             $('#modal_close, #overlay').click(methods.closeForm);
-            $( "a" ).click(methods.showForm);
+
+            $("#f").click(methods.showForm);
 
             return this;
 		},
 
         showForm: function(event){
             $('#overlay').fadeIn(200);//показать подложку
-            $('#modal_form')
+            $form
             .css('display', 'block')
             .animate({opacity: 1, top: '50%'}, 200);
         },
 
+        createForm: function(){
+            $("body").append("<div id='overlay'></div>")
+            .append("<div id='modal_form'></div>");
+            $("#modal_form").append("<form action='' method='post' class='form'></form>")
+            .append("<span id='modal_close'>X</span>");
+            $(".form").append("<h3></h3>");
+            for(var i=0;i<4;i++){
+                $(".form").append("<lable></lable></br>")
+                .append("<input type='text'/></br>");
+            }
+            $(".form").append("</br><input class='button disabled' id='butt' type='submit' />");
+            //return this;
+
+        },
+
+
         closeForm: function(){
-            $('#modal_form').css('display', 'none'); //display: none;
+            $form.css('display', 'none'); //display: none;
             $('#overlay').fadeOut(400); // скрываем подложку
         },
 
@@ -67,7 +100,7 @@
         },
 
         attention: function(){
-            $form.find(".empty").css('border-color','grey');
+            $form.find(".empty").css('border-color','red');
             setTimeout(function(){
                 $form.find('.empty').removeAttr('style');
             },500);
@@ -103,7 +136,11 @@
         p2: "Телефон",
         p3: "Email",
         p4: "Сообщение",
-        b: "отправить"
+        b: "отправить",
+        p1_check: true,
+        p2_check: false,
+        p3_check: false,
+        p4_check: false
 	}
 
 }( jQuery ));
