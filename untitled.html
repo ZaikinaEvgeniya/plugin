@@ -1,4 +1,3 @@
-# plugin
 <!doctype html>
 <html>
 <head>
@@ -12,18 +11,32 @@
     
 </head>
 <body>
-    <a href="#">link</a>
-    <!-- Модальное окно -->
+    <a href="#a">link</a>
+
 
 <div id="modal_form">
     
-        <form action="" method="post">
+        <form action="" method="post" class="form">
+        	<h3></h3>
+        	<p></p>
+        	<input class="ness_chek" type="text" name="name"  size="" />
+        	<p></p>
+        	<input class="ness_chek" type="text" name="tel"  size="" />
+        	<p></p>
+        	<input class="input" type="text" name="email"size="" />
+        	<p></p>
+        	<input class="input" type="text" name="sms" size="" />
+        	<p></p>
+        	<input class="button disabled" id="butt" type="submit" />
         </form>
-</div>
 
+</div>
 <div id="overlay"></div>
 
 <script src="js.js"></script>
+<script>
+$( "#modal_form" ).myPlugin({p4:"done"}).css('background','white');
+</script>
 
 </body>
 </html>
