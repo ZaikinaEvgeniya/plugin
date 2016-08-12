@@ -6,9 +6,7 @@ var methods = {
   $this: null,
 
    init: function(options) {
-
     this.$this = $(this);
-
     methods.createForm();
 
     var settings = $.extend( {}, $.fn.myPlugin.defaults, options );
