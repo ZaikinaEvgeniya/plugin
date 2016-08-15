@@ -39,16 +39,15 @@
             this.$form.find(".ness_chek").addClass("empty");
 
             this.$butt.click(methods.clickButton);
-            this.$form.find('#modal_close, #overlay').click(methods.closeForm);
+            $('#modal_close, #overlay').click(methods.closeForm);
             this.$this.click(methods.showForm);
 
             return this;
         },
 
         showForm: function() {
-            var form = $("#modal_form");
-            form.find('#overlay').fadeIn(200);//показать подложку
-            form
+            $('#overlay').fadeIn(200);//показать подложку
+            $("#modal_form")
                 .css('display', 'block')
                 .animate({opacity: 1, top: '50%'}, 200);
         },
@@ -63,18 +62,16 @@
             form.find(".form").append("<h3>");
 
             for (var i = 0;i < 4; i++){
-                form.find(".form").append("<lable></lable>")
-                    .append("<input type='text'/>");
+                form.find(".form").append("<lable></lable></br>")
+                    .append("<input type='text'/></br>");
             }
 
             form.find(".form").append("</br><input class='button disabled' id='butt' type='submit' />");
         },
 
         closeForm: function() {
-            $("#modal_form")
-                .css('display', 'none')
-                .find('#overlay')
-                .fadeOut(400); // скрываем подложку
+            $("#modal_form").css('display', 'none');
+            $('#overlay').fadeOut(400); // скрываем подложку
         },
 
         logic: function() { //логика проверки
