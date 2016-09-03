@@ -3,127 +3,168 @@
  */
 (function ($) {
 
-    var methods = {
+    var methods;
+    methods = {
         $form: null,
         $butt: null,
         $this: null,
 
-        init: function(options) {
+        init: function (options) {
             this.$this = $(this);
             methods.createForm();
 
-            var settings = $.extend( {}, $.fn.myPlugin.defaults, options );
-            this.$form = $("#modal_form");
-            //noinspection JSUnresolvedFunction
+            var settings = $.extend({}, $.fn.myPlugin.defaults, options);
+            this.$form = $("#modal_form").children();//.detach();//на время удалить для обработки
+            //this.$butt = this.$form.find(".button");
             this.$butt = this.$form.find(".button");
 
-            if(settings.p1_check == true) {
-                this.$form.find("input:eq(0)").addClass("ness_chek");
+            if (settings.p1_check) {
+                $("input:eq(0)", this.$form).addClass("ness_chek");
             }
-            if(settings.p2_check == true) {
-                this.$form.find("input:eq(1)").addClass("ness_chek");
+            $("input:eq(0)", this.$form).attr('name','name');
+            if (settings.p2_check) {
+                $("input:eq(1)", this.$form).addClass("ness_chek");
             }
-            if(settings.p3_check == true) {
-                this.$form.find("input:eq(2)").addClass("ness_chek");
+            $("input:eq(1)", this.$form).attr('name','tel');
+            if (settings.p3_check) {
+                $("input:eq(2)", this.$form).addClass("ness_chek");
             }
-            if(settings.p4_check == true) {
-                this.$form.find("input:eq(3)").addClass("ness_chek");
+            $("input:eq(2)", this.$form).attr('name','email');
+            if (settings.p4_check) {
+                $("input:eq(3)", this.$form).addClass("ness_chek");
             }
+            $("input:eq(3)", this.$form).attr('name','sms');
+
             $("h3").text(settings.h.toUpperCase());
-            this.$form.find("lable:eq(0)").text(settings.p1);
-            this.$form.find("lable:eq(1)").text(settings.p2);
-            this.$form.find("lable:eq(2)").text(settings.p3);
-            this.$form.find("lable:eq(3)").text(settings.p4);
-            this.$butt.val( settings.b.toUpperCase() );
+            $("lable:eq(0)", this.$form).text(settings.p1);
+            $("lable:eq(1)", this.$form).text(settings.p2);
+            $("lable:eq(2)", this.$form).text(settings.p3);
+            $("lable:eq(3)", this.$form).text(settings.p4);
+            this.$butt.val(settings.b.toUpperCase());
 
-            this.$form.find(".ness_chek").addClass("empty");
+            //$("#forma").append($("lable:eq(0)", this.$form)).append($("input:eq(0)"));
 
-            this.$butt.click(methods.clickButton);
-            $('#modal_close, #overlay').click(methods.closeForm);
-            this.$this.click(methods.showForm);
+            //this.$form.find(".ness_chek").addClass("empty");
+            $(".ness_chek", this.$form).addClass("empty");
 
+            //this.$butt.click(methods.clickButton);
+            this.$butt.on('click', methods.clickButton);
+
+            //$('#modal_close, #overlay').click(methods.closeForm);
+            $('#modal_close, #overlay').on('click', methods.closeForm);
+            //this.$this.click(methods.showForm);
+            this.$this.on('click', methods.showForm);
+
+            //this.$this.append(this.$form);//востановить
             return this;
         },
 
-        showForm: function() {
+        showForm: function () {
             $('#overlay').fadeIn(200);//показать подложку
             $("#modal_form")
                 .css('display', 'block')
                 .animate({opacity: 1, top: '50%'}, 200);
         },
 
-        createForm: function() {
-            $("body").append("<div id='overlay'></div>")
-                .append("<div id='modal_form'></div>");
-            var form = $("#modal_form");
+        createForm: function () {
+            $("body").append("<div id='overlay'></div> <div id='modal_form'></div>");
 
-            form.append("<form action='' method='post' class='form'></form>")
-                .append("<span id='modal_close'>X</span>");
-            form.find(".form").append("<h3>");
+            var $form = $("#modal_form"),
+                code='';
 
-            for (var i = 0;i < 4; i++){
-                form.find(".form").append("<lable></lable></br>")
-                    .append("<input type='text'/></br>");
+            $form
+                .append("<form action='' method='post' class='form'></form> <span id='modal_close'>X</span>")
+                .find(".form").append("<h3>");
+
+            for (var i = 4; i--;) {
+                code+="<lable></lable> <input type='text'/>";
             }
+            $form.find(".form")
+                .append(code)
+                .append("<input class='button' id='butt' type='submit' />");
 
-            form.find(".form").append("</br><input class='button disabled' id='butt' type='submit' />");
+            //$form.find("#butt").attr("disabled",true);
+            $("#butt", $form).data('disabled', false);
         },
 
-        closeForm: function() {
+        closeForm: function () {
             $("#modal_form").css('display', 'none');
             $('#overlay').fadeOut(400); // скрываем подложку
         },
 
-        logic: function() { //логика проверки
+        logic: function () { //логика проверки
             methods.chekInput();
-            var form = $("#modal_form");
-            var count = form.find( ".empty" ).length; //подсчет пустых
+            var $form = $("#modal_form"),
+            count = $(".empty", $form).length; //подсчет пустых
 
-            if(count > 0) {
-                if(form.find("#butt").hasClass('disabled')) {
+            if (count) {
+                if ($("#butt", $form).data('disabled')) {
                     return false
                 } else {
-                    form.find("#butt").addClass('disabled')
+                    $("#butt", $form).data('disabled', false);
                 }
             } else {
-                form.find("#butt").removeClass('disabled')
+                $("#butt", $form).data('disabled', true);
+
             }
+
         },
 
-        chekInput: function(){ //проверка полей
-            $("#modal_form").find( ".ness_chek" ).each(function() {
-                if($(this).val() != '') {
+        chekInput: function () { //проверка полей
+            $("#modal_form").find(".ness_chek").each(function () {
+                if ($(this).val() != '') {
                     //поле не пустое
-                    $(this).removeClass( "empty" );
+                    $(this).removeClass("empty");
+
                 } else {
                     //поле пустое
-                    $(this).addClass( "empty" );                }
+                    $(this).addClass("empty");
+                }
             });
         },
 
-        attention: function() {
-            $("#modal_form").find(".empty").css('border-color', 'red');
+        attention: function () {
+            $(".empty", $("#modal_form")).css('border-color', 'red');
 
-            setTimeout(function() {
-                $("#modal_form").find('.empty').removeAttr('style');
-            },500);
+            setTimeout(function () {
+                $(".empty", $("#modal_form")).removeAttr('style');
+            }, 500);
         },
 
-        clickButton: function() {
+        clickButton: function () {
             methods.logic();
 
-            if($(this).hasClass('disabled')) {
+            if (!$(this).data('disabled')) {
                 methods.attention();
                 return false
             } else {
                 //отправка
-                $("#modal_form").submit();
+                methods.send();
+                //$("#modal_form").submit(methods.send);
             }
+        },
+
+        send: function (){
+            var msg =  $("#modal_form").find(".form").serialize();
+            alert('Ваши данные\n\r'+ msg);
+
+            $.ajax({
+                type: 'POST',
+                url: $.fn.myPlugin.defaults.url,
+                data: msg,
+                success: function(data) {
+                    alert("Ваши данные отправлены!");
+                },
+                error:  function(xhr, str){
+                    //alert('Возникла ошибка: ' + xhr.responseCode);
+                }
+            });
         }
 
     };
 
     $.fn.myPlugin = function(options) {
+
         if ( methods[options] ) {
             return methods[ options ].apply( this, Array.prototype.slice.call( arguments, 1 ));
         } else if ( typeof options === 'object' || ! options ) {
@@ -143,7 +184,8 @@
         p1_check: true,
         p2_check: false,
         p3_check: false,
-        p4_check: false
+        p4_check: false,
+        url: "'send.php'"
     }
 
 }( jQuery ));
